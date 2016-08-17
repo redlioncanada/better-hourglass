@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+		/*css reset*/
+		html, body, div, span, applet, object, iframe,
+		h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+		a, abbr, acronym, address, big, cite, code,
+		del, dfn, em, img, ins, kbd, q, s, samp,
+		small, strike, strong, sub, sup, tt, var,
+		b, u, i, center,
+		dl, dt, dd, ol, ul, li,
+		fieldset, form, label, legend,
+		table, caption, tbody, tfoot, thead, tr, th, td,
+		article, aside, canvas, details, embed, 
+		figure, figcaption, footer, header, hgroup, 
+		menu, nav, output, ruby, section, summary,
+		time, mark, audio, video {
+			margin: 0;
+			padding: 0;
+			border: 0;
+			font-size: 100%;
+			font: inherit;
+			vertical-align: baseline;
+		}
+		/* HTML5 display-role reset for older browsers */
+		article, aside, details, figcaption, figure, 
+		footer, header, hgroup, menu, nav, section {
+			display: block;
+		}
+		body {
+			line-height: 1;
+		}
+		ol, ul {
+			list-style: none;
+		}
+		blockquote, q {
+			quotes: none;
+		}
+		blockquote:before, blockquote:after,
+		q:before, q:after {
+			content: '';
+			content: none;
+		}
+		table {
+			border-collapse: collapse;
+			border-spacing: 0;
+		}
+		h1 { font-size: 2em; }
+		h2 { font-size: 1.5em; }
+		h3 { font-size: 1.17em; }
+		h4 { font-size: 1.12em; }
+		h5 { font-size: .83em; }
+		h6 { font-size: .75em; }
+	</style>
+
+	<style type="text/css">
+		* {box-sizing: border-box;}
+		html {padding: 10px; width: 300px;}
+		body {width: 100%;}
+		html,body {
+			font-family: 'Helvetica Neue', helvetica, arial, sans-serif;
+		}
+		.heading {text-align: right; margin: 10px 0 15px 0; padding: 0 10px;}
+		.option {padding: 0 10px; font-size: .75em; margin-bottom: 7px; height: 19px;}
+		.option .title {float: left; line-height: 18px;}
+		.option .input {float: right;}
+		.option > * {width: 50%; height: 100%;}
+	</style>
+</head>
+
+<body>
+<h3 class="heading">Options</h3>
+<ul>
+	<!-- <li class="option">
+		<div class="title" data-id="description">Default description:</div>
+		<div class="input"><input type="" name="default_description"></div>
+	</li> -->
+</ul>
+<script src="vendor/zepto.js"></script>
+<script src="lib/config.js"></script>
+<script src="lib/storage.js"></script>
+<script src="lib/options.js"></script>
+</body>
+</html>

@@ -8,7 +8,8 @@ ga('set', 'checkProtocolTask', function(){}); // Removes failing protocol check.
 ga('require', 'displayfeatures');
 ga('send', 'pageview', '/background.html');
 
-var _bh = (function() {
+var _bhBackground = (function() {
+	var storage = _bhStorage(_bhConfig.uuid, _bhConfig.options.defaults, _bhConfig.options.suffix)
 	var debug = !('update_url' in chrome.runtime.getManifest());	//checks whether the runtime was downloaded from the store or not
 
 	var track = (function() {
@@ -144,7 +145,25 @@ var _bh = (function() {
 		}
 	})()
 
-	var app = $(function() {
+	var bootstrap = (function() {
+		var ready = 0
+
+		$(function() {
+			ready++
+			init()
+		})
+
+		storage.on('ready', function() {
+			ready++
+			init()
+		})
+
+		function init() {
+			if (ready == 2) app()
+		}
+	})()
+
+	var app = function() {
 		//app main
 		if (page.shouldRun()) {
 			log('init');
@@ -153,5 +172,9 @@ var _bh = (function() {
 				actions.hours()
 			}
 		}
-	});
+
+		storage.on('change', function(data) {
+			console.log(data)
+		})
+	};
 })();
