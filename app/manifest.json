@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Better Hourglass",
+  "description": "Quality of life improvements for the hourglass time tracking system.",
+  "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["zepto.js", "fuse.js", "background.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "version": "1.0.0",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}
