@@ -11,6 +11,7 @@ ga('send', 'pageview', '/background.html');
 var _bhBackground = (function() {
 	var storage = _bhStorage(_bhConfig.uuid, _bhConfig.options.defaults, _bhConfig.options.suffix)
 	var debug = !('update_url' in chrome.runtime.getManifest());	//checks whether the runtime was downloaded from the store or not
+	var options = {}
 
 	var track = (function() {
 		function _send(c,a,l) {
@@ -47,7 +48,8 @@ var _bhBackground = (function() {
 		return {
 			getHoursProjectEntrySelectors: function() {return _getElement('hours-project-selectors', '#enter_hours .entry select', true)},
 			getHoursProjectEntries: function() {return _getElement('hours-project-entries', '#enter_hours tr .entry:nth-child(2)', true)},
-			getHoursProjectEntryInputs: function() {return _getElement('hours-project-inputs', '#enter_hours .entry input.autocomplete', true)}
+			getHoursProjectEntryInputs: function() {return _getElement('hours-project-inputs', '#enter_hours .entry input.autocomplete', true)},
+			getHoursProjectDescriptions: function() {return _getElement('hours-project-descriptions', '#enter_hours tr .entry:nth-child(4) input', true)}
 		};
 	})();
 
@@ -89,54 +91,68 @@ var _bhBackground = (function() {
 		function hours() {
 			log('init hours page')
 
-			var entries = dom.getHoursProjectEntries(),
-				selectors = dom.getHoursProjectEntrySelectors()
+			autocompleteDockets()
+			insertDefaultDescriptions()
 
-			selectors.css('width', '70%')
-			entries.append(
-				$('<input></input>', {
-					placeholder: 'autocomplete...',
-					width: '27%',
-					class: 'autocomplete'
+			function insertDefaultDescriptions() {
+				var descriptions = dom.getHoursProjectDescriptions()
+
+				$(descriptions).each(function(index, value) {
+					var element = $(value)
+					if (!!options.description.value) element.val(options.description.value)
 				})
-			)
+			}
 
-			var inputs = dom.getHoursProjectEntryInputs(),
-				fuseOptions = {
-					caseSensitive: false,
-					shouldSort: true,
-					tokenize: false,
-					threshold: 0.6,
-					location: 0,
-					distance: 100,
-					maxPatternLength: 32,
-					keys: [
-						"id",
-						"title"
-					]
-				},
-				data = getSelectorData(selectors.eq(0)),
-				fuse = new Fuse(data, fuseOptions)
+			function autocompleteDockets() {
+				var entries = dom.getHoursProjectEntries(),
+					selectors = dom.getHoursProjectEntrySelectors()
 
-			inputs.on('keyup', function(e) {
-				var element = $(e.target),
-					dropdown = element.parent().find('select'),
-					search = fuse.search(element.val())
-
-					if (!element.val().length) return
-					if (search.length) dropdown.find('option:nth-child('+ search[0].index +')').attr('selected', true)
-			})
-
-			function getSelectorData(selector) {
-				var items = []
-				$.each($(selector).find('option'), function(index, item) {
-					items.push({
-						id: $(item).attr('value'),
-						title: $(item).text(),
-						index: index+1
+				selectors.css('width', '70%')
+				entries.append(
+					$('<input></input>', {
+						placeholder: 'autocomplete...',
+						width: '27%',
+						class: 'autocomplete'
 					})
+				)
+
+				var inputs = dom.getHoursProjectEntryInputs(),
+					fuseOptions = {
+						caseSensitive: false,
+						shouldSort: true,
+						tokenize: false,
+						threshold: 0.6,
+						location: 0,
+						distance: 100,
+						maxPatternLength: 32,
+						keys: [
+							"id",
+							"title"
+						]
+					},
+					data = getSelectorData(selectors.eq(0)),
+					fuse = new Fuse(data, fuseOptions)
+
+				inputs.on('keyup', function(e) {
+					var element = $(e.target),
+						dropdown = element.parent().find('select'),
+						search = fuse.search(element.val())
+
+						if (!element.val().length) return
+						if (search.length) dropdown.find('option:nth-child('+ search[0].index +')').attr('selected', true)
 				})
-				return items
+
+				function getSelectorData(selector) {
+					var items = []
+					$.each($(selector).find('option'), function(index, item) {
+						items.push({
+							id: $(item).attr('value'),
+							title: $(item).text(),
+							index: index+1
+						})
+					})
+					return items
+				}
 			}
 		}
 
@@ -158,8 +174,14 @@ var _bhBackground = (function() {
 			init()
 		})
 
+		storage.on('change', function(data) {
+			options = data
+			ready++
+			init()
+		})
+
 		function init() {
-			if (ready == 2) app()
+			if (ready == 3) app()
 		}
 	})()
 
@@ -172,9 +194,5 @@ var _bhBackground = (function() {
 				actions.hours()
 			}
 		}
-
-		storage.on('change', function(data) {
-			console.log(data)
-		})
 	};
 })();
